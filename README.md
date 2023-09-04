@@ -1,3 +1,3 @@
-# Aprendendo API
+# Desafiando com API
 
-Aula para saber mais sobre Node.js
+Desafio usando o Node.js
