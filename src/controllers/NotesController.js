@@ -1,30 +1,26 @@
 const knex = require("../database/knex");
+const AppError = require("../utils/AppError");
 
 class NotesController {
     async create(request, response) {
-        const { title, description, tags, links } = request.body;
+        const { title, description, rating, tags } = request.body;
         const { user_id } = request.params;
 
-        const [note_id] = await knex("notes").insert({
+        if(rating > 5 || rating < 1 ) {
+            throw new AppError("Rating o tem que possuir um valor entre 1 e 5")
+        }
+
+        const [movie_note_id] = await knex("movie_notes").insert({
             title,
             description,
             user_id
         });
-
-        const linksInsert = links.map(link => {
-            return {
-                note_id,
-                url: link
-            }
-        });
-
-        await knex("links").insert(linksInsert);
-        
+      
         const tagsInsert = tags.map(name => {
             return {
-                note_id,
-                name,
-                user_id
+                movie_note_id,
+                user_id,
+                name
             }
         });
 
@@ -86,7 +82,6 @@ class NotesController {
             const noteTags = userTags.filter(tag => tag.note_id === note.id);
 
             return {
-
                 ...note,
                 tags: noteTags
             }
