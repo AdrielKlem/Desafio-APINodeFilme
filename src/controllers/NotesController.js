@@ -6,6 +6,8 @@ class NotesController {
         const { title, description, rating, tags } = request.body;
         const { user_id } = request.params;
 
+        console.log({ title, description, rating, tags })
+
         if(rating > 5 || rating < 1 ) {
             throw new AppError("Rating o tem que possuir um valor entre 1 e 5")
         }
@@ -15,6 +17,8 @@ class NotesController {
             description,
             user_id
         });
+
+        console.log("Passou antes das tags")
       
         const tagsInsert = tags.map(name => {
             return {
@@ -24,9 +28,12 @@ class NotesController {
             }
         });
 
-        await knex("tags").insert(tagsInsert);
+        console.log("Passou depois das tags")
+        await knex("movie_tags").insert(tagsInsert);
+        console.log("Passou Na aplicação das tags")
 
-        response.json();
+
+        return response.json();
     }
 
     async show(request, response) {
